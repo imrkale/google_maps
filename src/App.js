@@ -7,8 +7,8 @@ import mapStyles from './mapStyles'
 function Map()
 {
   const [map,setMap]=useState(null);
-  const [data,setData]=useState("");
-
+  const [loc,setLoc]=useState();
+  
   // Create Section
   // const todoRef=firebase.database().ref("Products").child("Product1").child("Location");
   // const todo={
@@ -16,42 +16,56 @@ function Map()
   //   lng:73.8567
   // }
   // todoRef.push(todo);
-  
+  useEffect(() => {
     const todoRefe=firebase.database().ref("Products").child("Product1").child("Location");
     console.log("HIIII")
     todoRefe.on("value",(snapshot)=>{
-      setData(snapshot.val());
-      console.log(data);
+      
+      const data=snapshot.val();
+      const LocList=[];
+      for(let id in data)
+      {
+        LocList.push(data[id]);
+      }
+      console.log(LocList);
+      setLoc(LocList);
+
     })  
-
-
+    
+  }, [])
+  
+  
  
 
-  return <GoogleMap defaultZoom={10} defaultCenter={{lat:18.5204,lng:73.8567}}
-    defaultOptions={{style:mapStyles}}
-  >
-   {
-     data.map((data)=>(
-      <Marker
-      key={123}
-       position={{lat:data.lat,lng:data.lng}} 
-       onClick={()=>{setMap({lat:18.5204,lng:73.8567})}}
-       icon={{url:"https://static.thenounproject.com/png/429169-200.png",scaledSize:new window.google.maps.Size(45,45)}}/>
-     ))
-   }
-   
+  return<>
+  {loc && loc.map((location)=>(
+     <GoogleMap defaultZoom={10} defaultCenter={{lat:location.lat,lng:location.lng}}
+     defaultOptions={{style:mapStyles}}
+   >
   
-    {map && (
-      <InfoWindow 
-      position={{lat:map.lat,lng:map.lng}}
-      onCloseClick={()=>{
-        setMap(null)
-      }}>
-        <div>{map.lat}</div>
-      </InfoWindow>
-    )}
-  </GoogleMap>
+ <Marker
+     key={location.lat}
+      position={{lat:location.lat,lng:location.lng}} 
+      onClick={()=>{setMap({lat:location.lat,lng:location.lng})}}
+      icon={{url:"https://static.thenounproject.com/png/429169-200.png",scaledSize:new window.google.maps.Size(40,40)}}/>))
 
+     
+    
+    
+   
+     {map && (
+       <InfoWindow 
+       position={{lat:map.lat,lng:map.lng}}
+       onCloseClick={()=>{
+         setMap(null)
+       }}>
+         <div>{map.lat}</div>
+       </InfoWindow>
+     )}
+   </GoogleMap>
+ 
+  ))}
+  </>
 }
 
 const WrapperMap=withScriptjs(withGoogleMap(Map));
