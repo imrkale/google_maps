@@ -1,0 +1,26 @@
+
+.lmap{
+  flex: 0.6;
+  border-right: 1px solid var(--twitter-background);
+  width: 100vw;
+  height: 100vh;
+  overflow-y: scroll;
+ margin: 15px;
+  }
+  .lmap::-webkit-scrollbar {
+    display: none;
+  }
+  .data{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 250px;
+    font-size: 30px;
+  }
+  .lmap {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  
+ 
